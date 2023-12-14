@@ -86,29 +86,26 @@ impl BuildXML for Box<Drawing> {
                         .simple_pos(
                             &format!("{}", p.simple_pos_x),
                             &format!("{}", p.simple_pos_y),
-                        )
-                        .open_position_h(&format!("{}", p.relative_from_h));
+                        );
 
+                    b = b.open_position_h(&format!("{}", p.relative_from_h));
                     match p.position_h {
                         DrawingPosition::Offset(x) => {
                             let x = format!("{}", x as u32);
-                            b = b.pos_offset(&x).close();
+                            b = b.pos_offset(&x);
                         }
                         DrawingPosition::Align(x) => {
-                            b = b.align(&x.to_string()).close();
+                            b = b.align(&x.to_string());
                         }
                     }
-                    if let DrawingPosition::Offset(x) = p.position_h {
-                        let x = format!("{}", x as u32);
-                        b = b.pos_offset(&x).close();
-                    }
+                    b = b.close();
 
                     b = b.open_position_v(&format!("{}", p.relative_from_v));
-
                     if let DrawingPosition::Offset(y) = p.position_v {
                         let y = format!("{}", y as u32);
-                        b = b.pos_offset(&y).close();
+                        b = b.pos_offset(&y);
                     }
+                    b = b.close();
                 }
 
                 let w = format!("{}", p.size.0);
@@ -136,13 +133,15 @@ impl BuildXML for Box<Drawing> {
                     .add_child(&p.clone())
                     .close()
                     .close();
+
+                b = b.close();
             }
             Some(DrawingData::TextBox(_t)) => unimplemented!("TODO: Support textBox writer"),
             None => {
                 unimplemented!()
             }
         }
-        b.close().close().build()
+        b.close().build()
     }
 }
 

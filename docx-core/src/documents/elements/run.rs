@@ -305,7 +305,8 @@ impl BuildXML for Run {
                 RunChild::FieldChar(c) => b = b.add_child(c),
                 RunChild::InstrText(c) => b = b.add_child(c),
                 RunChild::DeleteInstrText(c) => b = b.add_child(c),
-                RunChild::InstrTextString(_) => unreachable!(),
+                // TODO: Why are we getting this on write, if it says its only for readers?
+                RunChild::InstrTextString(s) => b = b.open_instr_text().text(&s, true).close(),
             }
         }
         b.close().build()

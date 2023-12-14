@@ -57,6 +57,9 @@ impl Drawing {
 
 impl BuildXML for Box<Drawing> {
     fn build(&self) -> Vec<u8> {
+        // early-abort because I can't figure out why this is creating mismatched items
+        // return XMLBuilder::new().build();
+
         let b = XMLBuilder::new();
         let mut b = b.open_drawing();
 
@@ -136,9 +139,9 @@ impl BuildXML for Box<Drawing> {
 
                 b = b.close();
             }
-            Some(DrawingData::TextBox(_t)) => unimplemented!("TODO: Support textBox writer"),
-            None => {
-                unimplemented!()
+            _ => {
+                // just ignore everything else for now
+                // unimplemented!()
             }
         }
         b.close().build()
